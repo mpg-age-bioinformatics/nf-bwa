@@ -161,10 +161,6 @@ process flagstat {
     """
 }
 
-
-
-
-
 workflow images {
   main:
     get_images()
