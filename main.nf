@@ -99,6 +99,47 @@ process indexer {
     """
 }
 
+process mapping {
+  stageInMode 'symlink'
+  stageOutMode 'move'
+
+  input:
+    tuple val(pair_id), path(fastq)
+
+  output:
+    val pair_id
+
+  when:
+    ( ! file("${params.project_folder}/bwa_output/${pair_id}.sam").exists() ) 
+  
+  script:
+  def single = fastq instanceof Path
+
+  println single
+
+  if ( single ) {
+    """
+      mkdir -p /workdir/bwa_output
+      cd /raw_data
+      
+      echo ${pair_id}
+    """
+  } 
+  else { 
+    """
+      mkdir -p /workdir/bwa_output
+      cd /raw_data
+      
+      echo ${pair_id}
+    """
+  }
+
+}
+
+
+
+
+
 workflow images {
   main:
     get_images()
@@ -113,6 +154,18 @@ workflow index {
   main:
     indexer()
 }
+
+workflow map_reads {
+  main:
+    // Channel
+    //   .fromFilePairs( "${params.kallisto_raw_data}*.READ_{1,2}.fastq.gz", size: -1 )
+    //   .ifEmpty { error "Cannot find any reads matching: ${params.kallisto_raw_data}*.READ_{1,2}.fastq.gz" }
+    //   .set { read_files } 
+    read_files=Channel.fromFilePairs( "${params.bwa_raw_data}/*.R{1,2}.fastq.gz", size: -1 ) 
+    mapping( read_files )
+    // flagstat( mapping.out.collect(), read_files )
+}
+
 
 
 
