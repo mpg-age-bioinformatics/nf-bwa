@@ -115,14 +115,14 @@ process mapping {
   script:
   def single = fastq instanceof Path
 
-  println single
-
   if ( single ) {
     """
       mkdir -p /workdir/bwa_output
       cd /raw_data
       
       echo ${pair_id}
+      bwa mem -t ${task.cpus} -M "${params.genomes}/${params.organism}/${params.release}/toplevel_bwa/index.fa" ${pair_id}.READ_1.fastq.gz > /workdir/bwa_output/${pair_id}.sam
+  
     """
   } 
   else { 
@@ -131,9 +131,34 @@ process mapping {
       cd /raw_data
       
       echo ${pair_id}
+      bwa mem -t ${task.cpus} -M "${params.genomes}/${params.organism}/${params.release}/toplevel_bwa/index.fa" ${pair_id}.READ_1.fastq.gz ${pair_id}.READ_2.fastq.gz > /workdir/bwa_output/${pair_id}.sam 
     """
   }
 
+}
+
+process flagstat {
+  stageInMode 'symlink'
+  stageOutMode 'move'
+
+  input:
+    val pair_id
+    tuple val(pair_id), path(fastq)
+
+  when:
+    ( ! file("${params.project_folder}/bwa_output/${pair_id}.sorted.bam.bai").exists() ) 
+
+
+  script:
+    """
+    cd /workdir/bwa_output/
+
+    samtools view -bS ${pair_id}.sam > ${pair_id}.bam
+    samtools flagstat ${pair_id}.bam > ${pair_id}.bam.stat 
+    samtools sort -@ 10 -o ${pair_id}.sorted.bam ${pair_id}.bam
+    samtools index ${pair_id}.sorted.bam
+
+    """
 }
 
 
@@ -161,9 +186,9 @@ workflow map_reads {
     //   .fromFilePairs( "${params.kallisto_raw_data}*.READ_{1,2}.fastq.gz", size: -1 )
     //   .ifEmpty { error "Cannot find any reads matching: ${params.kallisto_raw_data}*.READ_{1,2}.fastq.gz" }
     //   .set { read_files } 
-    read_files=Channel.fromFilePairs( "${params.bwa_raw_data}/*.R{1,2}.fastq.gz", size: -1 ) 
+    read_files=Channel.fromFilePairs( "${params.bwa_raw_data}/*.READ_{1,2}.fastq.gz", size: -1 ) 
     mapping( read_files )
-    // flagstat( mapping.out.collect(), read_files )
+    flagstat( mapping.out.collect(), read_files )
 }
 
 
