@@ -76,6 +76,29 @@ process genome_collector {
     """
 }
 
+process indexer {
+  stageInMode 'symlink'
+  stageOutMode 'move'
+
+  when:
+    ( ! file("${params.genomes}/${params.organism}/${params.release}/toplevel_bwa/index.fa").exists() ) 
+  
+  script:
+    """
+
+    target_folder=/genomes/${params.organism}/${params.release}/toplevel_bwa
+
+    if [[ ! -e \$target_folder ]] ; then mkdir -p \$target_folder ; fi
+
+    cd \$target_folder
+
+    ln -s ${params.genomes}/${params.organism}/${params.release}/${params.organism}.${params.release}.fa index.fa
+
+    bwa index -a bwtsw -p index.fa index.fa
+
+    """
+}
+
 workflow images {
   main:
     get_images()
@@ -84,6 +107,11 @@ workflow images {
 workflow get_genome {
   main:
     genome_collector()
+}
+
+workflow index {
+  main:
+    indexer()
 }
 
 

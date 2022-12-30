@@ -1,10 +1,10 @@
 { 
     "project_folder" : "/beegfs/group_bit/home/AIqbal/nf-bwa-test" ,
     "bwa_raw_data" : "/beegfs/group_bit/home/AIqbal/nf-bwa-test/raw_data" ,
-    "genomes" : "/beegfs/common/genomes/nextflow_builds" ,
+    "genomes" : "/beegfs/common/genomes" ,
     "organism" : "caenorhabditis_elegans" ,
     "release" : "107" ,
     "url_gtf" : "ftp://ftp.ensembl.org/pub/release-107/gtf/caenorhabditis_elegans/" ,
     "url_dna" : "ftp://ftp.ensembl.org/pub/release-107/fasta/caenorhabditis_elegans/dna/"
-    
+
   }
