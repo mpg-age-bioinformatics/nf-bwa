@@ -43,3 +43,14 @@ git tag -e -a <tag> HEAD
 git push origin --tags
 gh release create <tag> 
 ```
+
+## Notes
+
+```
+PARAMS=/u/aiqbal/nf-bwa-test/params.json 
+PROFILE=raven
+nextflow run nf-bwa -params-file ${PARAMS} -entry images -profile ${PROFILE}
+nextflow run nf-bwa -params-file ${PARAMS} -entry get_genome -profile ${PROFILE}
+nextflow run nf-bwa -params-file ${PARAMS} -entry index -profile ${PROFILE}
+nextflow run nf-bwa -params-file ${PARAMS} -entry map_reads -profile ${PROFILE}
+```

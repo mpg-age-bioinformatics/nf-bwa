@@ -1,7 +1,7 @@
 { 
-    "project_folder" : "/beegfs/group_bit/home/AIqbal/nf-bwa-test" ,
-    "bwa_raw_data" : "/beegfs/group_bit/home/AIqbal/nf-bwa-test/raw_data" ,
-    "genomes" : "/beegfs/common/genomes" ,
+    "project_folder" : "/u/aiqbal/nf-bwa-test" ,
+    "bwa_raw_data" : "/u/aiqbal/nf-bwa-test/raw_data" ,
+    "genomes" : "/nexus/posix0/MAGE-flaski/service/genomes" ,
     "organism" : "caenorhabditis_elegans" ,
     "release" : "107" ,
     "url_gtf" : "ftp://ftp.ensembl.org/pub/release-107/gtf/caenorhabditis_elegans/" ,
